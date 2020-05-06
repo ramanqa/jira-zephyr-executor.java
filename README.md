@@ -63,26 +63,34 @@
     ```
 
 ### EXECUTE TESTS
-
-    ```
+```JAVA
     $> mvn clean verify
-    ```
+```
 
 ----
-## CONFIGURE FROM COMMAND LINE
+## ADVANCED
 
 ### Override jiraConfig:
 Pass following maven command line flags:
+```BASH
+ -Dzephyr.accessKey=[Your Account's Zephyr Access Key]
+ -Dzephyr.secretKey=[Your Account's Zephyr Secret Key]
+ -Djira.accountId=[Your Account ID]
+ -Djira.userId=[Your Account's Jira username]
+ -Djira.apiKey=[Your Account's Jira api key]
 
-    ```
-     -Dzephyr.accessKey=[Your Account's Zephyr Access Key]
-     -Dzephyr.secretKey=[Your Account's Zephyr Secret Key]
-     -Djira.accountId=[Your Account ID]
-     -Djira.userId=[Your Account's Jira username]
-     -Djira.apiKey=[Your Account's Jira api key]
+ -Dtest.projectId=[JIRA Project ID]
+ -Dtest.versionId=[JIRA version id, usualy '-1']
+ -Dtest.label=[Label name to create test cycle from]
+ -Dtest.testCycleName=[Name of test cycle to be created/executed]
+```
 
-     -Dtest.projectId=[JIRA Project ID]
-     -Dtest.versionId=[JIRA version id, usualy '-1']
-     -Dtest.label=[Label name to create test cycle from]
-     -Dtest.testCycleName=[Name of test cycle to be created/executed]
-    ```
+### Stepped execution (Staged mode):
+Pass any of the following flags to run specific step in Jira Test Execution:
+```BASH
+    -DjiraTestRunner.mode.staged
+    -DjiraTestRunner.step.createNewCycle [Optional]
+    -DjiraTestRunner.step.buildSuite [Optional]
+    -DjiraTestRunner.step.runSuite [Optional]
+    -DjiraTestRunner.step.postResults [Optional]
+````
