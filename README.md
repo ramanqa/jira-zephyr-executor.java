@@ -1,6 +1,5 @@
 # jira-zephyr-executor.java
 
-
 ### SETUP
 1. Download jar file to location [PROJECT-ROOT]/vendor/  
 [zfj-cloud-rest-client-1.3-jar-with-dependencies.jar](https://github.com/zephyrdeveloper/zapi-cloud/blob/master/Samples/production/zapi-cloud/generator/java/target/zfj-cloud-rest-client-1.3-jar-with-dependencies.jar?raw=true)
@@ -24,20 +23,28 @@
 3. Add following plugin to your test maven project:
     ```XML
       <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
         <executions>
           <execution>
+            <id>JIRA Zephyr Test Execution</id>
+            <phase>verify</phase>
             <goals>
               <goal>java</goal>
             </goals>
+            <configuration>
+              <mainClass>com.qainfotech.tap.JiraZephyrExecutor</mainClass>
+              <classpathScope>test</classpathScope>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <mainClass>com.qainfotech.tap.JiraZephyrExecutor</mainClass>
-          <classpathScope>test</classpathScope>
-        </configuration>
       </plugin>
     ``` 
 
@@ -56,11 +63,26 @@
     ```
 
 ### EXECUTE TESTS
-#### Running tests - pick configs from yaml file
-    ```
-    $> mvn clean test
-    ```
 
-
+    ```
+    $> mvn clean verify
+    ```
 
 ----
+## CONFIGURE FROM COMMAND LINE
+
+### Override jiraConfig:
+Pass following maven command line flags:
+
+    ```
+     -Dzephyr.accessKey=[Your Account's Zephyr Access Key]
+     -Dzephyr.secretKey=[Your Account's Zephyr Secret Key]
+     -Djira.accountId=[Your Account ID]
+     -Djira.userId=[Your Account's Jira username]
+     -Djira.apiKey=[Your Account's Jira api key]
+
+     -Dtest.projectId=[JIRA Project ID]
+     -Dtest.versionId=[JIRA version id, usualy '-1']
+     -Dtest.label=[Label name to create test cycle from]
+     -Dtest.testCycleName=[Name of test cycle to be created/executed]
+    ```
