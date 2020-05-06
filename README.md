@@ -61,6 +61,14 @@
     test.label=[Label name to create test cycle from]
     test.testCycleName=[Name of test cycle to be created/executed]
     ```
+5. label test issues in Zephyr with class and method of TestNG Test.
+
+For example:
+ if Test Class is: com.qainfotech.tap.test.app1.ApplicationLandingPageTest
+ and Test Method in class is: loginForIsDisplayedTest()
+ 
+ The Test Issue in Jira Zephyr should have a label: @taid=com.qainfotech.tap.test.app1.ApplicationLandingPageTest#loginForIsDisplayedTest
+ 
 
 ### EXECUTE TESTS
 ```JAVA
