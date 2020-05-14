@@ -31,7 +31,7 @@ public class JiraZephyrExecutor {
             String projectId = ConfigReader.get("test.projectId");
             String versionId = ConfigReader.get("test.versionId");
             String label = ConfigReader.get("test.label");
-            String testCycleName = ConfigReader.get("test.testCycleName") + "__" +  System.currentTimeMillis();
+            String testCycleName = ConfigReader.get("test.testCycleName");
             String testCycleId;
 
             System.out.println("== JiraTestRunner ==");
