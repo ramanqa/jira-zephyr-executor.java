@@ -42,6 +42,7 @@
             <configuration>
               <mainClass>com.qainfotech.tap.JiraZephyrExecutor</mainClass>
               <classpathScope>test</classpathScope>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
             </configuration>
           </execution>
         </executions>
