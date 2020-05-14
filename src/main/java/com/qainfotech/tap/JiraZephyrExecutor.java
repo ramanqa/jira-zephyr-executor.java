@@ -60,7 +60,8 @@ public class JiraZephyrExecutor {
                     Issue testIssue = JiraAPI.getIssue(testExecution.issueKey());
                     if(testIssue.taid().get("testClass") != null){
                         String testName = testExecution.issueKey() + "__" + testExecution.cycleId() + "__" + testExecution.issueId() + "__" + testExecution.id();
-                        TestNGSuite.addTest(testName, testIssue.taid().get("testClass"), testIssue.taid().get("testMethod"));
+                        String testId = testExecution.issueKey() + "__" + testExecution.cycleId() + "__" + testExecution.issueId() + "__" + testExecution.id();
+                        TestNGSuite.addTest(testName, testId, testIssue.taid().get("testClass"), testIssue.taid().get("testMethod"));
                     }
                 }
                 System.out.println("=== Created test suite: target/JIRATestNGTestSuite.xml");

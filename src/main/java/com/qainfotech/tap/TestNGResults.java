@@ -24,6 +24,7 @@ public class TestNGResults{
 
         for(XML test:report.nodes("//test")){
             Map<String, String> result = new HashMap<>(); 
+            String testName = test.node().getAttributes().getNamedItem("name").getNodeValue();
             String issueKey = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[0];
             String testCycleId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[1];
             String testExecutionIssueId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[2];
@@ -48,11 +49,12 @@ public class TestNGResults{
                     testData = testData.substring(0, testData.length()-1);
                 }
                 comment += "(" + testData + ")\n";
-                comment += "Result: " +  methodNode.node().getAttributes().getNamedItem("status").getNodeValue();
+                comment += "Result: " +  methodNode.node().getAttributes().getNamedItem("status").getNodeValue() +  "\n\n";
                 for(XML line:new XMLDocument(methodNode.toString()).nodes("//reporter-output/line")){
                     reportLines += line.node().getTextContent().toString().trim() + "\n";
                 }
-                comment += "\nLogs:\n" + reportLines;
+                //TODO: hotlink to test result report in jenkins
+                //comment += "Logs:\n" + reportLines;
             }
             
             result.put("issueKey", issueKey);
@@ -60,6 +62,9 @@ public class TestNGResults{
             result.put("issueId", testExecutionIssueId);
             result.put("id", testExecutionId);
             result.put("status", executionStatus.getJSONObject(status).toString());
+            comment += "\n Detailed Report: " + ConfigReader.get("jenkins.url") + "/job/" 
+                + ConfigReader.get("jenkins.jobPath") + "/artifact/target/test-report/JIRATestNGTestSuite/"
+                + testName + ".html";
             result.put("comment", comment);
 
             results.add(result);

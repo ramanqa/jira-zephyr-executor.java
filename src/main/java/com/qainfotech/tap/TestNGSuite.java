@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class TestNGSuite {
 
-    public static void addTest(String testName, String testClass, String testMethod) throws FileNotFoundException, IOException{
+    public static void addTest(String testName, String testId, String testClass, String testMethod) throws FileNotFoundException, IOException{
         XmlSuite suite = new XmlSuite();
         suite.setName("JIRATestNGTestSuite");
         suite.setFileName("JIRATestNGTestSuite.xml");
@@ -38,7 +38,9 @@ public class TestNGSuite {
         test.setXmlClasses(testClasses);
         suiteFile.createNewFile();
         try (FileWriter writer = new FileWriter(suiteFile)) {
-            writer.write(suite.toXml());
+            String xml = suite.toXml();
+            //xml = xml.replace("name=\"A\"", "name=\""+testName+"\" testId=\""+testId+"\"");
+            writer.write(xml);
             writer.flush();
             writer.close();
         }
