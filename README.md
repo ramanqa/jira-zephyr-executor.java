@@ -61,6 +61,8 @@
     test.versionId=[JIRA version id, usualy '-1']
     test.label=[Label name to create test cycle from]
     test.testCycleName=[Name of test cycle to be created/executed]
+    
+    jenkins.url=[JENKINS BASE URL]
     ```
 5. label test issues in Zephyr with class and method of TestNG Test.
 
@@ -92,6 +94,9 @@ Pass following maven command line flags:
  -Dtest.versionId=[JIRA version id, usualy '-1']
  -Dtest.label=[Label name to create test cycle from]
  -Dtest.testCycleName=[Name of test cycle to be created/executed]
+ 
+ -Djenkins.url=[JENKINS BASE URL]
+ -Djenkins.jobPath=[${JOB_NAME}/${BUILD_NUMBER}] // in Jenkins
 ```
 
 ### Stepped execution (Staged mode):
