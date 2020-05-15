@@ -165,7 +165,11 @@ public class JiraAPI {
         bodyJson.put("id", body.get("id"));
         bodyJson.put("issueId", body.get("issueId"));
         bodyJson.put("cycleId", body.get("cycleId"));
-        bodyJson.put("comment", body.get("comment"));
+        if(body.get("comment").length() < 750){
+            bodyJson.put("comment", body.get("comment"));
+        }else{
+            System.out.println("Issue " + body.get("issueId") + " comment too long. Posting results without comment");
+        }
         bodyJson.put("projectId", projectId );
         bodyJson.put("versionId", versionId);
         Map<String, String> jwtResponse  = GenerateJwt.jwt("PUT", "/public/rest/api/1.0/execution/" + executionId);

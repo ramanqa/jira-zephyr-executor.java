@@ -35,26 +35,35 @@ public class TestNGResults{
             String status = "";
             String comment = "";
             for(XML methodNode:classNode.nodes("//test-method")){
-                methodName = methodNode.node().getAttributes().getNamedItem("name").getNodeValue();
-                comment += "Executed Test: " + className + "#" + methodName;
-                String reportLines = "";
-                String testData = "";
-                if(!status.equals("FAIL")){
-                    status = methodNode.node().getAttributes().getNamedItem("status").getNodeValue();
+                Boolean isTestMethod = true;
+                try{
+                    if(methodNode.node().getAttributes().getNamedItem("is-config").getNodeValue().equalsIgnoreCase("true")){
+                        isTestMethod = false;
+                    }
+                }catch(NullPointerException e){
                 }
-                for(XML param:new XMLDocument(methodNode.toString()).nodes("//params/param")){
-                    testData += param.node().getTextContent().toString().trim() + ",";
+                if(isTestMethod){
+                    methodName = methodNode.node().getAttributes().getNamedItem("name").getNodeValue();
+                    String executionLine = className + "#" + methodName;
+                    String reportLines = "";
+                    String testData = "";
+                    if(!status.equals("FAIL")){
+                        status = methodNode.node().getAttributes().getNamedItem("status").getNodeValue();
+                    }
+                    for(XML param:new XMLDocument(methodNode.toString()).nodes("//params/param")){
+                        testData += param.node().getTextContent().toString().trim() + ",";
+                    }
+                    if(testData != ""){
+                        testData = testData.substring(0, testData.length()-1);
+                    }
+                    executionLine += "(" + testData + ")";
+                    comment += methodNode.node().getAttributes().getNamedItem("status").getNodeValue().toUpperCase() + " : " + executionLine + "\n";
+                    for(XML line:new XMLDocument(methodNode.toString()).nodes("//reporter-output/line")){
+                        reportLines += line.node().getTextContent().toString().trim() + "\n";
+                    }
+                    //TODO: hotlink to test result report in jenkins
+                    //comment += "Logs:\n" + reportLines;
                 }
-                if(testData != ""){
-                    testData = testData.substring(0, testData.length()-1);
-                }
-                comment += "(" + testData + ")\n";
-                comment += "Result: " +  methodNode.node().getAttributes().getNamedItem("status").getNodeValue() +  "\n\n";
-                for(XML line:new XMLDocument(methodNode.toString()).nodes("//reporter-output/line")){
-                    reportLines += line.node().getTextContent().toString().trim() + "\n";
-                }
-                //TODO: hotlink to test result report in jenkins
-                //comment += "Logs:\n" + reportLines;
             }
             
             result.put("issueKey", issueKey);
@@ -66,7 +75,6 @@ public class TestNGResults{
                 + ConfigReader.get("jenkins.jobPath") + "/artifact/target/test-report/JIRATestNGTestSuite/"
                 + testName + ".html";
             result.put("comment", comment);
-
             results.add(result);
         }
 
