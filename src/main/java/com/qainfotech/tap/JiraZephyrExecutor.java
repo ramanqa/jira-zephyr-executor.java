@@ -18,6 +18,8 @@ public class JiraZephyrExecutor {
             Boolean runSuite = true;
             Boolean postResults = true;
 
+            String suiteName = ConfigReader.get("testng.suite");
+
             Boolean staged = false;
             staged = ConfigReader.isFlagSet("jiraTestRunner.mode.staged");
 
@@ -64,12 +66,12 @@ public class JiraZephyrExecutor {
                         TestNGSuite.addTest(testName, testId, testIssue.taid().get("testClass"), testIssue.taid().get("testMethod"));
                     }
                 }
-                System.out.println("=== Created test suite: target/JIRATestNGTestSuite.xml");
+                System.out.println("=== Created test suite: target/"+suiteName+".xml");
             }
 
             System.out.println("=== jiraTestRunner.step.runSuite = " + runSuite);
             if(runSuite){
-                System.out.println("=== Running Test Suite: target/JIRATestNGTestSuite.xml ");
+                System.out.println("=== Running Test Suite: target/"+suiteName+".xml ");
                 TestNGSuite.run();
             }
 

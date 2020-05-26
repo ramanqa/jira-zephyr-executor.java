@@ -19,11 +19,12 @@ public class TestNGSuite {
 
     public static void addTest(String testName, String testId, String testClass, String testMethod) throws FileNotFoundException, IOException{
         XmlSuite suite = new XmlSuite();
-        suite.setName("JIRATestNGTestSuite");
-        suite.setFileName("JIRATestNGTestSuite.xml");
-        File suiteFile = new File("target/JIRATestNGTestSuite.xml");
+        String suiteName = ConfigReader.get("testng.suite");
+        suite.setName(suiteName);
+        suite.setFileName(suiteName + ".xml");
+        File suiteFile = new File("target/"+suiteName+".xml");
         if(suiteFile.exists()){
-            suite = new SuiteXmlParser().parse("JIRATestNGTestSuite",
+            suite = new SuiteXmlParser().parse(suiteName,
                     new FileInputStream(suiteFile), true);
         }
         XmlTest test = new XmlTest(suite);
@@ -49,7 +50,7 @@ public class TestNGSuite {
     public static void run(){
         TestNG testng = new TestNG();
         List<String> suites = new ArrayList<>();
-        suites.add("target/JIRATestNGTestSuite.xml");
+        suites.add("target/"+ConfigReader.get("testng.suite")+".xml");
         testng.setTestSuites(suites);
         testng.setOutputDirectory("target/test-report");
         testng.run();

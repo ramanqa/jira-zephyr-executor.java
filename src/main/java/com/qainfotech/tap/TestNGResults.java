@@ -14,6 +14,7 @@ import java.util.Scanner;
 public class TestNGResults{
 
     public static List<Map<String, String>> report() throws FileNotFoundException{
+        String suiteName = ConfigReader.get("testng.suite");
         List<Map<String, String>> results = new ArrayList<>();
         Scanner executionStatusScanner = new Scanner(TestNGResults.class.getClassLoader().getResourceAsStream("executionStatus.json"), "UTF-8");
         String executionStatusText = executionStatusScanner.useDelimiter("\\A").next();
@@ -72,7 +73,7 @@ public class TestNGResults{
             result.put("id", testExecutionId);
             result.put("status", executionStatus.getJSONObject(status).toString());
             comment += "\n Detailed Report: " + ConfigReader.get("jenkins.url") + "/job/" 
-                + ConfigReader.get("jenkins.jobPath") + "/artifact/target/test-report/JIRATestNGTestSuite/"
+                + ConfigReader.get("jenkins.jobPath") + "/artifact/target/test-report/"+suiteName+"/"
                 + testName + ".html";
             result.put("comment", comment);
             results.add(result);
