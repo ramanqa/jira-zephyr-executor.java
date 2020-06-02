@@ -29,6 +29,7 @@ public class TestNGSuite {
         }
         XmlTest test = new XmlTest(suite);
         test.setName(testName);
+        test.setThreadCount(Integer.parseInt(ConfigReader.get("testng.threads")));
 
         List<XmlClass> testClasses = new ArrayList<>();
         XmlClass xmlClass = new XmlClass(testClass);

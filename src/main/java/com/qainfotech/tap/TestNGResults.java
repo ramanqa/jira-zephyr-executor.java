@@ -72,9 +72,9 @@ public class TestNGResults{
             result.put("issueId", testExecutionIssueId);
             result.put("id", testExecutionId);
             result.put("status", executionStatus.getJSONObject(status).toString());
-            comment += "\n Detailed Report: " + ConfigReader.get("jenkins.url") + "/job/" 
+            result.put("detailedResultsUrl","\n Detailed Report: " + ConfigReader.get("jenkins.url") + "/job/" 
                 + ConfigReader.get("jenkins.jobPath") + "/artifact/target/test-report/"+suiteName+"/"
-                + testName + ".html";
+                + testName + ".html");
             result.put("comment", comment);
             results.add(result);
         }
