@@ -1,6 +1,6 @@
 package com.qainfotech.tap.jira.models;
 
-import org.json.JSONObject;
+import kong.unirest.json.JSONObject;
 
 public class TestCycle {
 

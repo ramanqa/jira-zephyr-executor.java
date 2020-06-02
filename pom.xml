@@ -23,24 +23,10 @@
       <version>4.5.12</version>
     </dependency>
     <dependency>
-      <groupId>com.mashape.unirest</groupId>
+      <groupId>com.konghq</groupId>
       <artifactId>unirest-java</artifactId>
-      <version>1.4.9</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpasyncclient</artifactId>
-      <version>4.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpmime</artifactId>
-      <version>4.3.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20140107</version>
+      <version>3.7.02</version>
+      <classifier>standalone</classifier>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>

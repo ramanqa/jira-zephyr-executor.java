@@ -6,12 +6,13 @@ import com.qainfotech.tap.jira.models.*;
 import java.util.List;
 import java.util.Map;
 
-import com.mashape.unirest.http.Unirest;
+import kong.unirest.Unirest;
 
 public class JiraZephyrExecutor {
 
   
     public static void main(String... args) throws Exception{
+        Unirest.config().verifySsl(false);
         try{
             Boolean createNewCycle = true;
             Boolean buildSuite = true;
@@ -83,10 +84,10 @@ public class JiraZephyrExecutor {
                 }
             }
             System.out.println("== Done. ==");
-            Unirest.shutdown();
+            Unirest.shutDown();
         }catch(Exception e){
         }finally{
-            Unirest.shutdown();
+            Unirest.shutDown();
         }
         
     }

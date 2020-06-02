@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import org.json.JSONObject;
-import org.json.JSONArray;
+import kong.unirest.json.JSONObject;
+import kong.unirest.json.JSONArray;
 
 public class Issue {
 
