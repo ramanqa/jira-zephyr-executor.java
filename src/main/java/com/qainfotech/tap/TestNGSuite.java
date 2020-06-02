@@ -30,7 +30,8 @@ public class TestNGSuite {
         XmlTest test = new XmlTest(suite);
         test.setName(testName);
         test.setThreadCount(Integer.parseInt(ConfigReader.get("testng.threads")));
-
+        suite.setThreadCount(Integer.parseInt(ConfigReader.get("testng.threads")));
+        suite.setParallel("tests"); 
         List<XmlClass> testClasses = new ArrayList<>();
         XmlClass xmlClass = new XmlClass(testClass);
         List<XmlInclude> methods = new ArrayList<>();
