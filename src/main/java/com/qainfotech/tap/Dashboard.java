@@ -64,7 +64,6 @@ public class Dashboard {
         json += "var projectId = " + projectId + ";";
         json += "var versionId = " + versionId + ";";
 
-        System.out.println(json);
         File testTrend = new File("target/test-trend.js");
         try (FileWriter writer = new FileWriter(testTrend)) {
           writer.write(json);

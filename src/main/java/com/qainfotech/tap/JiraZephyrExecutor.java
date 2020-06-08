@@ -5,6 +5,8 @@ import com.qainfotech.tap.jira.models.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import kong.unirest.Unirest;
 
@@ -47,7 +49,9 @@ public class JiraZephyrExecutor {
             System.out.println("=== jiraTestRunner.step.createNewCycle = " + createNewCycle);
             if(createNewCycle){
                 System.out.println("=== Building Test Cycle from Label: " + label);
-                testCycleName += "__" +  System.currentTimeMillis();
+                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                Date date = new Date();
+                testCycleName += "_" + formatter.format(date);// + "__" +  System.currentTimeMillis();
                 testCycleId = JiraAPI.createTestCycle(projectId, versionId, testCycleName);
                 List<String> issues = JiraAPI.getIssuesByProjectIdAndLabel(projectId, label);
                 JiraAPI.addTestsToTestCycle(projectId, versionId, testCycleId, issues);

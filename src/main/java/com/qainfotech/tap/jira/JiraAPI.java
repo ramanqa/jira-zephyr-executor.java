@@ -169,7 +169,7 @@ public class JiraAPI {
             bodyJson.put("comment", longComment);
         }else{
             System.out.println("Issue " + body.get("issueId") + " comment too long. Posting results without comment");
-            bodyJson.put("comemnt", body.get("detailedResultsUrl"));
+            bodyJson.put("comment", body.get("detailedResultsUrl"));
         }
         bodyJson.put("projectId", projectId );
         bodyJson.put("versionId", versionId);
