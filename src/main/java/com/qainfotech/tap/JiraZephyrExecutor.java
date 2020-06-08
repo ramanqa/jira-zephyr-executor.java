@@ -18,6 +18,7 @@ public class JiraZephyrExecutor {
             Boolean buildSuite = true;
             Boolean runSuite = true;
             Boolean postResults = true;
+            Boolean generateDashboard = true;
 
             String suiteName = ConfigReader.get("testng.suite");
 
@@ -29,6 +30,7 @@ public class JiraZephyrExecutor {
                 buildSuite = ConfigReader.isFlagSet("jiraTestRunner.step.buildSuite");
                 runSuite = ConfigReader.isFlagSet("jiraTestRunner.step.runSuite");
                 postResults = ConfigReader.isFlagSet("jiraTestRunner.step.postResults");
+                generateDashboard = ConfigReader.isFlagSet("jiraTestRunner.step.generateDashboard");
             }
           
             String projectId = ConfigReader.get("test.projectId");
@@ -83,9 +85,17 @@ public class JiraZephyrExecutor {
                     JiraAPI.postExecutionResult(projectId, versionId, testResult.get("id"), testResult);
                 }
             }
+
+            System.out.println("=== jiraTestRunner.step.generateDashboard = " + generateDashboard);
+            if(generateDashboard){
+                System.out.println("=== Generating Dashboard");
+                Dashboard.generate();
+            }
+
             System.out.println("== Done. ==");
             Unirest.shutDown();
         }catch(Exception e){
+            e.printStackTrace();
         }finally{
             Unirest.shutDown();
         }

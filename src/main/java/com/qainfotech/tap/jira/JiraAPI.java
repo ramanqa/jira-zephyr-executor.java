@@ -108,7 +108,7 @@ public class JiraAPI {
     }
     
     public static List<TestCycle> getTestCycles(String projectId, String versionId) throws URISyntaxException, UnirestException, IOException{
-        Map<String, String> jwtResponse  = GenerateJwt.jwt("GET", "/public/rest/api/1.0/cycles/search?versionId="+versionId+"&projectId="+projectId);
+        Map<String, String> jwtResponse  = GenerateJwt.jwt("GET", "/public/rest/api/1.0/cycles/search?expand=executionSummaries&versionId="+versionId+"&projectId="+projectId);
         JSONArray response = Unirest.get(jwtResponse.get("url"))
             .header("Authorization", jwtResponse.get("jwt"))
             .header("zapiAccessKey", ConfigReader.get("zephyr.accessKey"))
