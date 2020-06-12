@@ -33,6 +33,10 @@ public class TestExecution {
         return data.getString("issueSummary");
     }
 
+    public String component(){
+        return data.getString("component");
+    }
+
     public String result(){
         return data.getJSONObject("execution").getJSONObject("status").getString("name");
     }

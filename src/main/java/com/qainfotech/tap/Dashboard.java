@@ -55,7 +55,8 @@ public class Dashboard {
             row += "summary: '" + testExecution.issueSummary() +"',";
             row += "result: '" + testExecution.result() + "',";
             row += "executionId: '" + testExecution.id() + "',";
-            row += "issueId: '" + testExecution.issueId() + "'";
+            row += "issueId: '" + testExecution.issueId() + "',";
+            row += "component: '" + testExecution.component() + "'";
             row += "}\n";
             lastExecutionResultTable += row + ",\n";
         }
