@@ -38,8 +38,12 @@ public class Issue {
 
     public Map<String, String> taid(){
         Map<String, String> testInfo = new HashMap<>();
+        testInfo.put("testName", null);
+        testInfo.put("testClass", null);
+        testInfo.put("testMethod", null);
         for(String label:labels()){
             if(label.startsWith("@taid=")){
+                try{
                 String testClass = label.split("=")[1].split("#")[0];
                 String testMethod = label.split("=")[1].split("#")[1];
                 String testName = key();
@@ -47,6 +51,9 @@ public class Issue {
                 testInfo.put("testClass", testClass);
                 testInfo.put("testMethod", testMethod);
                 return testInfo;
+                }catch(Exception e){
+                    System.out.println("==== FAIL to get test class mapping " + key());
+                }
             }
         }
         return testInfo;
