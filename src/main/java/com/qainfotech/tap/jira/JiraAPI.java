@@ -134,16 +134,30 @@ public class JiraAPI {
     }
 
     public static List<TestExecution> getTestExecutionsByTestCycleId(String projectId, String versionId, String testCycleId) throws URISyntaxException, UnirestException, IOException{
-        //TODO handle respose when cycle has more than 50 results with pagination
-        Map<String, String> jwtResponse  = GenerateJwt.jwt("GET", "/public/rest/api/1.0/executions/search/cycle/"+testCycleId+"?size=50&versionId="+versionId+"&projectId="+projectId);
-        JSONObject response = Unirest.get(jwtResponse.get("url"))
-            .header("Authorization", jwtResponse.get("jwt"))
-            .header("zapiAccessKey", ConfigReader.get("zephyr.accessKey"))
-            .asJson().getBody().getObject();
+        Boolean inLoop = true;
         List<TestExecution> testExecutions = new ArrayList<>();
-        JSONArray objectList = response.getJSONArray("searchObjectList");
-        for(int index=0; index < objectList.length(); index++){
-            testExecutions.add(new TestExecution(objectList.getJSONObject(index)));
+        Integer offset = 0;
+        Integer size = 50;
+        JSONArray searchObjectList = new JSONArray();
+        while(inLoop){
+            Map<String, String> jwtResponse  = GenerateJwt.jwt("GET", "/public/rest/api/1.0/executions/search/cycle/"+testCycleId+"?size="+size+"&offset="+offset+"&versionId="+versionId+"&projectId="+projectId);
+            JSONObject response = Unirest.get(jwtResponse.get("url"))
+                .header("Authorization", jwtResponse.get("jwt"))
+                .header("zapiAccessKey", ConfigReader.get("zephyr.accessKey"))
+                .asJson().getBody().getObject();
+            JSONArray objectList = response.getJSONArray("searchObjectList");
+            if(objectList.length() > 0 ){
+                offset += size;
+                for(int index = 0; index < response.getJSONArray("searchObjectList").length(); index++){
+                    searchObjectList.put(response.getJSONArray("searchObjectList").getJSONObject(index));
+                }
+            }else{
+                inLoop = false;
+            }
+        }
+
+        for(int index=0; index < searchObjectList.length(); index++){
+            testExecutions.add(new TestExecution(searchObjectList.getJSONObject(index)));
         }
         return testExecutions;
     }
