@@ -6,6 +6,8 @@ import com.qainfotech.tap.jira.models.TestExecution;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.net.URISyntaxException;
 import java.io.IOException;
 import java.io.File;
@@ -64,6 +66,57 @@ public class Dashboard {
         json += lastExecutionResultTable;
         json += "var projectId = " + projectId + ";";
         json += "var versionId = " + versionId + ";";
+
+        List<String> radarLabels = new ArrayList<>();
+        Map<String, Integer> radarComponentTotal = new HashMap<>();
+        Map<String, Integer> radarComponentPass = new HashMap<>();
+        Map<String, Integer> radarComponentFail = new HashMap<>();
+        for(TestExecution testExecution:testExecutions){
+            if(!radarLabels.contains(testExecution.component())){
+                radarLabels.add(testExecution.component());
+            }
+            if(radarComponentTotal.containsKey(testExecution.component())){
+                radarComponentTotal.put(testExecution.component(), radarComponentTotal.get(testExecution.component()) + 1);
+            }else{
+                radarComponentTotal.put(testExecution.component(), 1);
+            }
+            if(testExecution.result().equals("PASS")){
+                if(radarComponentPass.containsKey(testExecution.component())){
+                    radarComponentPass.put(testExecution.component(), radarComponentPass.get(testExecution.component()) + 1);
+                }else{
+                    radarComponentPass.put(testExecution.component(), 1);
+                }
+            }
+            if(testExecution.result().equals("FAIL")){
+                if(radarComponentFail.containsKey(testExecution.component())){
+                    radarComponentFail.put(testExecution.component(), radarComponentFail.get(testExecution.component()) + 1);
+                }else{
+                    radarComponentFail.put(testExecution.component(), 1);
+                }
+            }
+        }
+        String testResultsRadar = "\n\nvar testResultsRadarLabels = [";
+        for(String component:radarLabels){
+            testResultsRadar += "'" + component + "',";
+        }
+        testResultsRadar += "]\n\n";
+        testResultsRadar += "var testResultsRadarTotalData = [";
+        for(String component:radarLabels){
+            testResultsRadar += radarComponentTotal.get(component) + ",";
+        }
+        testResultsRadar += "];\n\n";
+        testResultsRadar += "var testResultsRadarPassData = [";
+        for(String component:radarLabels){
+            testResultsRadar += radarComponentPass.get(component) + ",";
+        }
+        testResultsRadar += "];\n\n";
+        testResultsRadar += "var testResultsRadarFailData = [";
+        for(String component:radarLabels){
+            testResultsRadar += radarComponentFail.get(component) + ",";
+        }
+        testResultsRadar += "];\n\n";
+
+        json += testResultsRadar;
 
         File testTrend = new File("target/test-trend.js");
         try (FileWriter writer = new FileWriter(testTrend)) {

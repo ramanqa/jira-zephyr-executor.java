@@ -33,6 +33,24 @@
           </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="row p-3">
+            <div class="col d-flex justify-content-center">
+              <h2>Last Test Execution: Test Results - Distribution by Component</h2>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col d-flex justify-content-center">
+              <div class="radar-container" style="position: relative; height:500px; width:900px">
+                <canvas id="radar"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col">
           <div class="row p-3">
@@ -79,6 +97,7 @@
       resultsTable += "</tbody></table>";
       testResultContainer.html(resultsTable);
     </script>
+
     <script>
       var barChartData = {
         labels: labels,
@@ -123,6 +142,31 @@
               yAxes: [{
                 stacked: true
               }]
+            }
+          }
+        });
+
+        var ctx2 = document.getElementById('radar').getContext('2d');
+        var myRadar = new Chart(ctx2, {
+          type: 'radar',
+          data: {
+            labels: testResultsRadarLabels,
+            datasets: [{
+              label: 'Total',
+              data: testResultsRadarTotalData
+            },{
+              label: 'Pass',
+              data: testResultsRadarPassData,
+              backgroundColor: Color('#1e7e34').alpha(0.2).rgbString(),
+              borderColor: '#1e7e34',
+              pointBackgroundColor: '#1e7e34'
+            }]
+          },
+          options: {
+            scale: {
+              ticks: {
+                beginAtZero: true
+              }
             }
           }
         });
