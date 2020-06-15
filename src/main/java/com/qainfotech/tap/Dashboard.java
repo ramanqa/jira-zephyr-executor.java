@@ -21,7 +21,7 @@ public class Dashboard {
         String projectId = ConfigReader.get("test.projectId");
         String versionId = ConfigReader.get("test.versionId");
 
-        try{Thread.sleep();}catch(Exception e){}
+        try{Thread.sleep(5000);}catch(Exception e){}
 
         List<TestCycle> testCycles = JiraAPI.getTestCycles(projectId, versionId);
         String labels = "";
