@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 
 import kong.unirest.UnirestException;
+import org.apache.commons.lang.StringEscapeUtils;
 
 public class Dashboard {
 
@@ -56,8 +57,8 @@ public class Dashboard {
         for(TestExecution testExecution:testExecutions){
             String row = "{";
             row += "key: '" + testExecution.issueKey() + "',";
-            row += "summary: '" + testExecution.issueSummary() +"',";
-            row += "result: '" + testExecution.result() + "',";
+            row += "summary: \"" + StringEscapeUtils.escapeHtml(testExecution.issueSummary()) +"\",";
+            row += "result: '" + StringEscapeUtils.escapeHtml(testExecution.result()) + "',";
             row += "executionId: '" + testExecution.id() + "',";
             row += "issueId: '" + testExecution.issueId() + "',";
             row += "component: '" + testExecution.component() + "'";
