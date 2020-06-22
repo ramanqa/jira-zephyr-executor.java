@@ -67,13 +67,17 @@ public class JiraZephyrExecutor {
                 List<TestExecution> testExecutions = JiraAPI.getTestExecutionsByTestCycleId(projectId, versionId, testCycle.id());
                 for(TestExecution testExecution:testExecutions){
                     System.out.println("==== Adding test to local test suite: " + testExecution.issueKey());
-                    Issue testIssue = JiraAPI.getIssue(testExecution.issueKey());
-                    if(testIssue.taid().get("testClass") != null){
-                        String testName = testExecution.issueKey() + "__" + testExecution.cycleId() + "__" + testExecution.issueId() + "__" + testExecution.id();
-                        String testId = testExecution.issueKey() + "__" + testExecution.cycleId() + "__" + testExecution.issueId() + "__" + testExecution.id();
-                        TestNGSuite.addTest(testName, testId, testIssue.taid().get("testClass"), testIssue.taid().get("testMethod"));
-                    }else{
-                        System.out.println("==== FAILED to add test to local test suite " + testExecution.issueKey());
+                    try{
+                        Issue testIssue = JiraAPI.getIssue(testExecution.issueKey());
+                        if(testIssue.taid().get("testClass") != null){
+                            String testName = testExecution.issueKey() + "__" + testExecution.cycleId() + "__" + testExecution.issueId() + "__" + testExecution.id();
+                            String testId = testExecution.issueKey() + "__" + testExecution.cycleId() + "__" + testExecution.issueId() + "__" + testExecution.id();
+                            TestNGSuite.addTest(testName, testId, testIssue.taid().get("testClass"), testIssue.taid().get("testMethod"));
+                        }else{
+                            System.out.println("==== FAILED to add test to local test suite " + testExecution.issueKey());
+                        }
+                    }catch(Exception e){
+                        e.printStackTrace();
                     }
                 }
                 System.out.println("=== Created test suite: target/"+suiteName+".xml");
