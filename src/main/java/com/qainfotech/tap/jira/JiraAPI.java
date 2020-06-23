@@ -147,7 +147,7 @@ public class JiraAPI {
                 .asJson().getBody().getObject();
             JSONArray objectList = response.getJSONArray("searchObjectList");
             if(objectList.length() > 0 ){
-                offset += size;
+                offset += 50;
                 for(int index = 0; index < response.getJSONArray("searchObjectList").length(); index++){
                     searchObjectList.put(response.getJSONArray("searchObjectList").getJSONObject(index));
                 }

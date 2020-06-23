@@ -65,6 +65,7 @@ public class JiraZephyrExecutor {
                 System.out.println("=== Building local Test Suite for Test Cycle: " + testCycleName);
                 TestCycle testCycle = JiraAPI.getTestCycleByName(projectId, versionId, testCycleName);
                 List<TestExecution> testExecutions = JiraAPI.getTestExecutionsByTestCycleId(projectId, versionId, testCycle.id());
+                System.out.println("==== Trying to add build local suite with " + testExecutions.size() + " tests");
                 for(TestExecution testExecution:testExecutions){
                     System.out.println("==== Adding test to local test suite: " + testExecution.issueKey());
                     try{
@@ -77,6 +78,7 @@ public class JiraZephyrExecutor {
                             System.out.println("==== FAILED to add test to local test suite " + testExecution.issueKey());
                         }
                     }catch(Exception e){
+                        System.out.println("==== FAILED to add test to local test suite " + testExecution.issueKey() + " " + e.getMessage());
                         e.printStackTrace();
                     }
                 }
