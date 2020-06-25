@@ -24,59 +24,62 @@ public class TestNGResults{
         XML report = new XMLDocument(new File("target/test-report/testng-results.xml"));
 
         for(XML test:report.nodes("//test")){
-            Map<String, String> result = new HashMap<>(); 
-            String testName = test.node().getAttributes().getNamedItem("name").getNodeValue();
-            String issueKey = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[0];
-            String testCycleId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[1];
-            String testExecutionIssueId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[2];
-            String testExecutionId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[3];
-            XML classNode = new XMLDocument(test.toString()).nodes("//class").get(0);
-            String className = classNode.node().getAttributes().getNamedItem("name").getNodeValue();
-            String methodName = "";
-            String status = "";
-            String comment = "";
-            for(XML methodNode:classNode.nodes("//test-method")){
-                Boolean isTestMethod = true;
-                try{
-                    if(methodNode.node().getAttributes().getNamedItem("is-config").getNodeValue().equalsIgnoreCase("true")){
-                        isTestMethod = false;
+            try{
+                Map<String, String> result = new HashMap<>(); 
+                String testName = test.node().getAttributes().getNamedItem("name").getNodeValue();
+                String issueKey = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[0];
+                String testCycleId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[1];
+                String testExecutionIssueId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[2];
+                String testExecutionId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[3];
+                System.out.println(issueKey);
+                XML classNode = new XMLDocument(test.toString()).nodes("//class").get(0);
+                String className = classNode.node().getAttributes().getNamedItem("name").getNodeValue();
+                String methodName = "";
+                String status = "";
+                String comment = "";
+                for(XML methodNode:classNode.nodes("//test-method")){
+                    Boolean isTestMethod = true;
+                    try{
+                        if(methodNode.node().getAttributes().getNamedItem("is-config").getNodeValue().equalsIgnoreCase("true")){
+                            isTestMethod = false;
+                        }
+                    }catch(NullPointerException e){
                     }
-                }catch(NullPointerException e){
+                    if(isTestMethod){
+                        methodName = methodNode.node().getAttributes().getNamedItem("name").getNodeValue();
+                        String executionLine = className + "#" + methodName;
+                        String reportLines = "";
+                        String testData = "";
+                        if(!status.equals("FAIL")){
+                            status = methodNode.node().getAttributes().getNamedItem("status").getNodeValue();
+                        }
+                        for(XML param:new XMLDocument(methodNode.toString()).nodes("//params/param")){
+                            testData += param.node().getTextContent().toString().trim() + ",";
+                        }
+                        if(testData != ""){
+                            testData = testData.substring(0, testData.length()-1);
+                        }
+                        executionLine += "(" + testData + ")";
+                        comment += methodNode.node().getAttributes().getNamedItem("status").getNodeValue().toUpperCase() + " : " + executionLine + "\n";
+                        for(XML line:new XMLDocument(methodNode.toString()).nodes("//reporter-output/line")){
+                            reportLines += line.node().getTextContent().toString().trim() + "\n";
+                        }
+                        //TODO: hotlink to test result report in jenkins
+                        //comment += "Logs:\n" + reportLines;
+                    }
                 }
-                if(isTestMethod){
-                    methodName = methodNode.node().getAttributes().getNamedItem("name").getNodeValue();
-                    String executionLine = className + "#" + methodName;
-                    String reportLines = "";
-                    String testData = "";
-                    if(!status.equals("FAIL")){
-                        status = methodNode.node().getAttributes().getNamedItem("status").getNodeValue();
-                    }
-                    for(XML param:new XMLDocument(methodNode.toString()).nodes("//params/param")){
-                        testData += param.node().getTextContent().toString().trim() + ",";
-                    }
-                    if(testData != ""){
-                        testData = testData.substring(0, testData.length()-1);
-                    }
-                    executionLine += "(" + testData + ")";
-                    comment += methodNode.node().getAttributes().getNamedItem("status").getNodeValue().toUpperCase() + " : " + executionLine + "\n";
-                    for(XML line:new XMLDocument(methodNode.toString()).nodes("//reporter-output/line")){
-                        reportLines += line.node().getTextContent().toString().trim() + "\n";
-                    }
-                    //TODO: hotlink to test result report in jenkins
-                    //comment += "Logs:\n" + reportLines;
-                }
-            }
-            
-            result.put("issueKey", issueKey);
-            result.put("cycleId", testCycleId);
-            result.put("issueId", testExecutionIssueId);
-            result.put("id", testExecutionId);
-            result.put("status", executionStatus.getJSONObject(status).toString());
-            result.put("detailedResultsUrl","\n Detailed Report: " + ConfigReader.get("jenkins.url") + "/job/" 
-                + ConfigReader.get("jenkins.jobPath") + "/artifact/target/test-report/"+suiteName+"/"
-                + testName + ".html");
-            result.put("comment", comment);
-            results.add(result);
+                
+                result.put("issueKey", issueKey);
+                result.put("cycleId", testCycleId);
+                result.put("issueId", testExecutionIssueId);
+                result.put("id", testExecutionId);
+                result.put("status", executionStatus.getJSONObject(status).toString());
+                result.put("detailedResultsUrl","\n Detailed Report: " + ConfigReader.get("jenkins.url") + "/job/" 
+                    + ConfigReader.get("jenkins.jobPath") + "/artifact/target/test-report/"+suiteName+"/"
+                    + testName + ".html");
+                result.put("comment", comment);
+                results.add(result);
+            }catch(Exception e){e.printStackTrace();}
         }
 
         return results;

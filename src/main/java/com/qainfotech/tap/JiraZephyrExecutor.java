@@ -57,6 +57,9 @@ public class JiraZephyrExecutor {
                 JiraAPI.addTestsToTestCycle(projectId, versionId, testCycleId, issues);
                 System.out.println("=== Created Test Cycle: " + testCycleName);
                 System.out.println("=== Added "+issues.size()+" tests to Test Cycle");
+                try{
+                    Thread.sleep(60000);
+                }catch(Exception e){}
                 //System.out.println(JiraAPI.getProjectNameById(projectId)); 
             }
 
