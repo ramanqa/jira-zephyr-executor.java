@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import kong.unirest.json.JSONObject;
 import kong.unirest.json.JSONArray;
 
@@ -25,6 +27,38 @@ public class Issue {
 
     public String id(){
         return this.data.getString("id");
+    }
+
+    public String status(){
+        return this.data.getJSONObject("fields").getJSONObject("status").getString("name");
+    }
+
+    public Date statusChangeDate(){
+        try{
+            String statusChangeDate = this.data.getJSONObject("fields").getString("statuscategorychangedate");
+            statusChangeDate = statusChangeDate.split("T")[0];
+            SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
+            return formatter.parse(statusChangeDate);
+        }catch(Exception e){}
+        return null;
+    }
+
+    public List<String> components(){
+        List<String> components = new ArrayList<>();
+
+        JSONArray componentsArray = this.data.getJSONObject("fields").getJSONArray("components");
+        for(int i = 0; i < componentsArray.length(); i++){
+            components.add(componentsArray.getJSONObject(i).getString("name"));
+        }
+        return components;
+    }
+
+    public String assignee(){
+        try{
+            return this.data.getJSONObject("fields").getJSONObject("assignee").getString("displayName");
+        }catch(Exception e){
+            return "";
+        }
     }
 
     public List<String> labels(){

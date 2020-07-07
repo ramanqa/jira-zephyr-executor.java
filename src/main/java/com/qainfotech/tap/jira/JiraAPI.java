@@ -39,6 +39,32 @@ public class JiraAPI {
         return response.getString("name");
     }
 
+    public static List<String> getAllTestsByProjectId(String projectId) throws UnirestException, IOException{
+        String projectName = getProjectNameById(projectId);
+        String jql = URLEncoder.encode("project=\""+projectName+"\" and issuetype=\"Test\"", "UTF-8");
+      
+        JSONObject response = getIssuesByJqlStartingAt(jql, 0);
+        Integer maxResults = response.getInt("maxResults");
+        Integer total = response.getInt("total");
+        List<String> issues = new ArrayList<>();
+
+        for(int index=0; index<response.getJSONArray("issues").length(); index++){
+            String issueKey = response.getJSONArray("issues").getJSONObject(index).getString("key");
+            issues.add(issueKey);
+        }
+
+        for(int iteration=1; iteration<=Math.floor(total/maxResults); iteration++){
+            response = getIssuesByJqlStartingAt(jql, iteration*maxResults);
+            for(int index=0;index<response.getJSONArray("issues").length(); index++){
+                String issueKey = response.getJSONArray("issues").getJSONObject(index).getString("key");
+                issues.add(issueKey);
+            }
+        }
+
+        return issues;
+    }
+
+
     public static List<String> getIssuesByProjectIdAndLabel(String projectId, String label) throws UnirestException, IOException{
         String projectName = getProjectNameById(projectId);
         String jql = URLEncoder.encode("project=\""+projectName+"\" and labels=\""+label+"\"", "UTF-8");
