@@ -33,6 +33,23 @@ public class Issue {
         return this.data.getJSONObject("fields").getJSONObject("status").getString("name");
     }
 
+    public Date statusCompletedDate(){
+        try{
+            JSONArray histories = this.data.getJSONObject("changelog").getJSONArray("histories");
+            for(int index=0; index<histories.length(); index++){
+                JSONObject history = histories.getJSONObject(index);
+                if(history.getJSONArray("items").getJSONObject(0).get("toString")==null){
+                    continue;
+                }
+                if(history.getJSONArray("items").getJSONObject(0).getString("toString").toString().equals("Completed")){
+                    SimpleDateFormat formatter=new SimpleDateFormat("yyyy-MM-dd");
+                    return formatter.parse(history.getString("created").split("T")[0]);
+                }
+            }
+        }catch(Exception e){}
+        return null;
+    }
+
     public Date statusChangeDate(){
         try{
             String statusChangeDate = this.data.getJSONObject("fields").getString("statuscategorychangedate");

@@ -191,7 +191,7 @@ public class JiraAPI {
     public static Issue getIssue(String issueKey) throws UnirestException{
         Base64.Encoder encoder = Base64.getEncoder();
         String signature = encoder.encodeToString(((String)ConfigReader.get("jira.userId") + ":" + ConfigReader.get("jira.apiKey")).getBytes());
-        String url = ConfigReader.get("jira.baseUrl") + "/rest/agile/1.0/issue/" + issueKey;
+        String url = ConfigReader.get("jira.baseUrl") + "/rest/agile/1.0/issue/" + issueKey + "?expand=changelog";
         JSONObject response = Unirest.get(url)
             .header("Authorization", "Basic " + signature)
             .asJson().getBody().getObject();
