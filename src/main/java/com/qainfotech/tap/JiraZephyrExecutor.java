@@ -57,8 +57,18 @@ public class JiraZephyrExecutor {
                 JiraAPI.addTestsToTestCycle(projectId, versionId, testCycleId, issues);
                 System.out.println("=== Created Test Cycle: " + testCycleName);
                 System.out.println("=== Added "+issues.size()+" tests to Test Cycle");
+                Integer expectedTestsInTestCycle = issues.size();
                 try{
-                    Thread.sleep(60000);
+                    System.out.println("Waiting for jira to update test cycle cache...");
+                    for(int poll = 1; poll < 61; poll++){
+                        System.out.print("..." + 10*poll);
+                        Thread.sleep(10000);
+                        List<TestExecution> testExecutions = JiraAPI.getTestExecutionsByTestCycleId(projectId, versionId, testCycleId);
+                        if(testExecutions.size() == expectedTestsInTestCycle){
+                            break;
+                        }
+                    }
+                    System.out.println("...Done");
                 }catch(Exception e){}
                 //System.out.println(JiraAPI.getProjectNameById(projectId)); 
             }
