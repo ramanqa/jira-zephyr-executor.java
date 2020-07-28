@@ -60,6 +60,22 @@ public class Issue {
         return null;
     }
 
+    public List<String> relatesToIssues(){
+        List<String> relatedIssues = new ArrayList<>();
+        if(!this.data.getJSONObject("fields").has("issuelinks")){
+            return relatedIssues;
+        }
+        JSONArray issueLinks = this.data.getJSONObject("fields").getJSONArray("issuelinks");
+        for(int index=0; index<issueLinks.length(); index++){
+            if(issueLinks.getJSONObject(index).getJSONObject("type").getString("inward").equals("relates to")){
+                if(issueLinks.getJSONObject(index).has("inwardIssue")){
+                    relatedIssues.add(issueLinks.getJSONObject(index).getJSONObject("inwardIssue").getString("key"));
+                }
+            }
+        }
+        return relatedIssues;
+    }
+
     public List<String> components(){
         List<String> components = new ArrayList<>();
 
