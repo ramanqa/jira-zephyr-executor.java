@@ -36,6 +36,10 @@ public class TestCycle {
                 Integer count = data.getJSONArray("executionSummaries").getJSONObject(i).getInt("count");
                 summary.put("FAIL", count);              
             }
+            if(data.getJSONArray("executionSummaries").getJSONObject(i).getString("executionStatusName").equals("UNEXECUTED")){
+                Integer count = data.getJSONArray("executionSummaries").getJSONObject(i).getInt("count");
+                summary.put("UNEXECUTED", count);              
+            }
         }
         return summary;
     }

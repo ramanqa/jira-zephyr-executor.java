@@ -60,7 +60,7 @@ public class JiraZephyrExecutor {
                 Integer expectedTestsInTestCycle = issues.size();
                 try{
                     System.out.println("Waiting for jira to update test cycle cache...");
-                    for(int poll = 1; poll < 61; poll++){
+                    for(int poll = 1; poll < 121; poll++){
                         System.out.print("..." + 10*poll);
                         Thread.sleep(10000);
                         List<TestExecution> testExecutions = JiraAPI.getTestExecutionsByTestCycleId(projectId, versionId, testCycleId);
