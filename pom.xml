@@ -44,6 +44,11 @@
       <version>2.6</version>
     </dependency>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
       <groupId>com.thed.zhephy.cloud.rest</groupId>
       <artifactId>zfj-cloud-rest-client</artifactId>
       <version>1.0</version>

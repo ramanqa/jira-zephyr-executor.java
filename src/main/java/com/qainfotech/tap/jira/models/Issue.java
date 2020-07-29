@@ -29,6 +29,10 @@ public class Issue {
         return this.data.getString("id");
     }
 
+    public String summary(){
+        return this.data.getJSONObject("fields").getString("summary");
+    }
+
     public String status(){
         return this.data.getJSONObject("fields").getJSONObject("status").getString("name");
     }
@@ -60,8 +64,8 @@ public class Issue {
         return null;
     }
 
-    public List<String> relatesToIssues(){
-        List<String> relatedIssues = new ArrayList<>();
+    public List<Map<String, String>> relatesToIssues(){
+        List<Map<String, String>> relatedIssues = new ArrayList<>();
         if(!this.data.getJSONObject("fields").has("issuelinks")){
             return relatedIssues;
         }
@@ -69,7 +73,16 @@ public class Issue {
         for(int index=0; index<issueLinks.length(); index++){
             if(issueLinks.getJSONObject(index).getJSONObject("type").getString("inward").equals("relates to")){
                 if(issueLinks.getJSONObject(index).has("inwardIssue")){
-                    relatedIssues.add(issueLinks.getJSONObject(index).getJSONObject("inwardIssue").getString("key"));
+                    Map<String, String> relatedIssue = new HashMap<>();
+                    relatedIssue.put("key", issueLinks.getJSONObject(index).getJSONObject("inwardIssue").getString("key"));
+                    relatedIssue.put("summary", issueLinks.getJSONObject(index).getJSONObject("inwardIssue").getJSONObject("fields").getString("summary"));
+                    relatedIssues.add(relatedIssue);
+                }
+                if(issueLinks.getJSONObject(index).has("outwardIssue")){
+                    Map<String, String> relatedIssue = new HashMap<>();
+                    relatedIssue.put("key", issueLinks.getJSONObject(index).getJSONObject("outwardIssue").getString("key"));
+                    relatedIssue.put("summary", issueLinks.getJSONObject(index).getJSONObject("outwardIssue").getJSONObject("fields").getString("summary"));
+                    relatedIssues.add(relatedIssue);
                 }
             }
         }

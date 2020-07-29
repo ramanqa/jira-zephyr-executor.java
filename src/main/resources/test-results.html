@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+
+  <body>
+    <nav class="blue darken-4">
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo">Report</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="dashboard.html">Summary</a></li>
+          <li><a href="test-results.html">Test Results</a></li> </ul>
+      </div>
+    </nav>
+
+
+    <div class="row">
+      <div class="col s12">
+        <h4>Detailed Test Results</h4>
+        <ul class="tabs">
+          <li class="tab teal"><a class='black-text' href="#pass">Pass</a></li>
+          <li class="tab red darken-3"><a class='black-text' href="#fail">Fail</a></li>
+          <li class="tab amber lighten-2"><a class='black-text' href="#blocked">Blocked</a></li>
+          <li class="tab blue-grey"><a class='black-text' href="#unexecuted">Unexecuted</a></li>
+        </ul>
+      </div>
+      <div id="pass" class="col s12">
+        <ul id="pass-tests" class="collapsible">
+        </ul>
+      </div>
+      <div id="fail" class="col s12">
+        <ul id='fail-tests' class="collapsible">
+        </ul>
+      </div>
+      <div id="blocked" class="col s12">
+        <ul id='blocked-tests' class="collapsible">
+        </ul>
+      </div>
+      <div id="unexecuted" class="col s12">
+        <ul id='unexecuted-tests' class="collapsible">
+        </ul>
+      </div>
+    </div>
+
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="test-results.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript">
+      var instance = M.Tabs.init(document.querySelector(".tabs"));
+      results.forEach(function(result){
+        var row = document.createElement("li");
+        var testbg = "teal";
+        if(result.result == "FAIL"){
+          testbg = "red darken-3";
+        }else if(result.result == "BLOCKED"){
+          testbg = "amber lighten-2";
+        }else if(result.result == "UNEXECUTED"){
+          testbg = "blue-grey"
+        }
+        var testDetails = "<ul class='collection'>";
+        testDetails += "<li class='collection-item'><h5>Covered Tests: </h5>\n<ul>";
+        result.coveredTests.forEach(function(coveredTest){
+          testDetails += "<li>"+coveredTest.key+" - " + coveredTest.summary + "</li>\n";
+        });
+        testDetails += "</ul></li>";
+        try{
+          testDetails += "<li class='collection-item'><h5>Execution Log: </h5>\n<div>"+result.details.log.replace(/\n/g, "<br />")+"</div></li>";
+          testDetails += "<li class='collection-item'><h5>Detaied Report Link: </h5>\n<a href='"+result.details.url.split("Report: ")[1]+"'>Detailed Report</a></li>";
+        }catch(e){}
+        testDetails += "<ul>";
+        row.innerHTML = "<div class='collapsible-header "+testbg+"'>"+result.key +" - "+ result.summary +"</div><div class='collapsible-body'>"+testDetails+"</div>";
+        document.querySelector("#pass-tests").appendChild(row);
+        if(result.result == "FAIL"){
+          document.querySelector("#fail-tests").appendChild(row);
+        }else if(result.result == "BLOCKED"){
+          document.querySelector("#blocked-tests").appendChild(row);
+        }else if(result.result == "UNEXECUTED"){
+          document.querySelector("#unexecuted-tests").appendChild(row);
+        }
+      });
+      var elems = document.querySelectorAll('.collapsible');
+      var instances = M.Collapsible.init(elems);
+    </script>
+  </body>
+</html>

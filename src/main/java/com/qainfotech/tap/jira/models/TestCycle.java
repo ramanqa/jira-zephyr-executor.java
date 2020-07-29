@@ -27,6 +27,7 @@ public class TestCycle {
         summary.put("FAIL", 0);
         summary.put("UNEXECUTED", 0);
         summary.put("SKIP", 0);
+        summary.put("BLOCKED", 0);
         for(int i = 0; i < data.getJSONArray("executionSummaries").length(); i++){
             if(data.getJSONArray("executionSummaries").getJSONObject(i).getString("executionStatusName").equals("PASS")){
                 Integer count = data.getJSONArray("executionSummaries").getJSONObject(i).getInt("count");
@@ -39,6 +40,10 @@ public class TestCycle {
             if(data.getJSONArray("executionSummaries").getJSONObject(i).getString("executionStatusName").equals("UNEXECUTED")){
                 Integer count = data.getJSONArray("executionSummaries").getJSONObject(i).getInt("count");
                 summary.put("UNEXECUTED", count);              
+            }
+            if(data.getJSONArray("executionSummaries").getJSONObject(i).getString("executionStatusName").equals("BLOCKED")){
+                Integer count = data.getJSONArray("executionSummaries").getJSONObject(i).getInt("count");
+                summary.put("BLOCKED", count);              
             }
         }
         return summary;

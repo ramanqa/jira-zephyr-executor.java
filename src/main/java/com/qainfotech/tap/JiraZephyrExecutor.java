@@ -21,6 +21,7 @@ public class JiraZephyrExecutor {
             Boolean runSuite = true;
             Boolean postResults = true;
             Boolean generateDashboard = true;
+            Boolean generateCoverageReport = true;
 
             String suiteName = ConfigReader.get("testng.suite");
 
@@ -33,6 +34,7 @@ public class JiraZephyrExecutor {
                 runSuite = ConfigReader.isFlagSet("jiraTestRunner.step.runSuite");
                 postResults = ConfigReader.isFlagSet("jiraTestRunner.step.postResults");
                 generateDashboard = ConfigReader.isFlagSet("jiraTestRunner.step.generateDashboard");
+                generateCoverageReport = ConfigReader.isFlagSet("jiraTestRunner.step.generateCoverageReport");
             }
           
             String projectId = ConfigReader.get("test.projectId");
@@ -115,7 +117,7 @@ public class JiraZephyrExecutor {
             System.out.println("=== jiraTestRunner.step.generateDashboard = " + generateDashboard);
             if(generateDashboard){
                 System.out.println("=== Generating Dashboard");
-                Dashboard.generate();
+                TestCoverageReport.generate();
             }
 
             System.out.println("== Done. ==");

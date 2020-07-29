@@ -37,6 +37,7 @@ public class TestNGResults{
                 String methodName = "";
                 String status = "";
                 String comment = "";
+                String log = "";
                 for(XML methodNode:classNode.nodes("//test-method")){
                     Boolean isTestMethod = true;
                     try{
@@ -61,11 +62,22 @@ public class TestNGResults{
                         }
                         executionLine += "(" + testData + ")";
                         comment += methodNode.node().getAttributes().getNamedItem("status").getNodeValue().toUpperCase() + " : " + executionLine + "\n";
+                        log += executionLine + "\n";
                         for(XML line:new XMLDocument(methodNode.toString()).nodes("//reporter-output/line")){
                             reportLines += line.node().getTextContent().toString().trim() + "\n";
                         }
+                        for(XML line:new XMLDocument(methodNode.toString()).nodes("//exception")){
+                            reportLines += line.node().getAttributes().getNamedItem("class").getNodeValue() + "\n";
+                        }
+                        for(XML line:new XMLDocument(methodNode.toString()).nodes("//exception/message")){
+                            reportLines += line.node().getTextContent().toString().trim() + "\n";
+                        }
+                        for(XML line:new XMLDocument(methodNode.toString()).nodes("//exception/full-stacktrace")){
+                            reportLines += line.node().getTextContent().toString().trim() + "\n";
+                        } 
                         //TODO: hotlink to test result report in jenkins
                         //comment += "Logs:\n" + reportLines;
+                        log += reportLines;
                     }
                 }
                 
@@ -78,6 +90,7 @@ public class TestNGResults{
                     + ConfigReader.get("jenkins.jobPath") + "/artifact/target/test-report/"+suiteName+"/"
                     + testName + ".html");
                 result.put("comment", comment);
+                result.put("log", log);
                 results.add(result);
             }catch(Exception e){e.printStackTrace();}
         }
