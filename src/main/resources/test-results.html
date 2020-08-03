@@ -71,7 +71,19 @@
         });
         testDetails += "</ul></li>";
         try{
-          testDetails += "<li class='collection-item'><h5>Execution Log: </h5>\n<div>"+result.details.log.replace(/\n/g, "<br />")+"</div></li>";
+          var lines = result.details.log.replace(/\n\n/g, "\n").split("\n");
+          var steps = "";
+          lines.forEach(function(line){
+            if(line.indexOf("jcabi-aspects") == -1){
+              if(line.indexOf("SCREENSHOT: ") != -1){
+                var src = line.split(": ")[1].split(" :")[0].split("target/report/")[1];
+                steps += "SCREENSHOT: <a href='"+src+"' target='_blank'><img src='"+src+"' style='height:100px;border:0px;'/></a><br />";
+              }else{
+                steps += line + "<br />";
+              }
+            }
+          });
+          testDetails += "<li class='collection-item'><h5>Execution Log: </h5>\n<div>"+steps+"</div></li>";
           testDetails += "<li class='collection-item'><h5>Detaied Report Link: </h5>\n<a href='"+result.details.url.split("Report: ")[1]+"'>Detailed Report</a></li>";
         }catch(e){}
         testDetails += "<ul>";
