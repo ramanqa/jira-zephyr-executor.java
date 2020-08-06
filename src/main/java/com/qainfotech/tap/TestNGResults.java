@@ -30,7 +30,7 @@ public class TestNGResults{
                 String issueKey = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[0];
                 String testCycleId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[1];
                 String testExecutionIssueId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[2];
-                String testExecutionId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[3];
+                String testExecutionId = test.node().getAttributes().getNamedItem("name").getNodeValue().split("__")[3].replace("(failed)", "");
                 System.out.println(issueKey);
                 XML classNode = new XMLDocument(test.toString()).nodes("//class").get(0);
                 String className = classNode.node().getAttributes().getNamedItem("name").getNodeValue();
