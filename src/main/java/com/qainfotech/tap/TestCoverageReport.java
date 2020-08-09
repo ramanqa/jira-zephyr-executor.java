@@ -15,6 +15,9 @@ import org.apache.commons.lang.StringEscapeUtils;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class TestCoverageReport {
 
     public static void generate() throws Exception {
@@ -113,6 +116,12 @@ public class TestCoverageReport {
 
         String resultsjs = "";
         JSONArray resultsJson = new JSONArray();
+        if(ConfigReader.isFlagSet("jiraTestRunner.mode.rerun")){
+            String resultsJs = (new String(Files.readAllBytes(Paths.get("target/report/test-results.js")))).trim();
+            resultsJs = "[{" + resultsJs.split("var results = \\[\\{")[1];
+            resultsJs = resultsJs.substring(0, resultsJs.length() -1);
+            resultsJson = new JSONArray(resultsJs);
+        }
         for(TestScript testScript:testScripts){
           JSONObject testScriptResult = new JSONObject();
           testScriptResult.put("key", testScript.key());
@@ -130,7 +139,16 @@ public class TestCoverageReport {
           resultDetails.put("url", testScript.report().get("detailedResultsUrl"));
           resultDetails.put("log", testScript.report().get("log"));
           testScriptResult.put("details", resultDetails);
-          resultsJson.put(testScriptResult);
+          if(ConfigReader.isFlagSet("jiraTestRunner.mode.rerun")){
+              for(int index=0; index<resultsJson.length(); index++){
+                  JSONObject oldResult = resultsJson.getJSONObject(index);
+                  if(oldResult.getString("key").equals(testScriptResult.get("key"))){
+                      resultsJson.put(index, testScriptResult);
+                  }
+              }
+          }else{
+              resultsJson.put(testScriptResult);
+          }
         }
         resultsjs += "var results = " + resultsJson.toString() + ";";
         FileWriter rwriter = new FileWriter("target/report/test-results.js");
