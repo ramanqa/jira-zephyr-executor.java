@@ -31,16 +31,25 @@ public class JiraZephyrExecutor {
             String testCycleName = ConfigReader.get("test.testCycleName");
 
             System.out.println("== JiraTestRunner ==");
-            if(modeStaged){
+            if(modeDefault){
+                System.setProperty("jiraTestRunner.step.createNewCycle", "true");
+                System.setProperty("jiraTestRunner.step.buildSuite", "true");
+                System.setProperty("jiraTestRunner.step.runSuite", "true");
+                System.setProperty("jiraTestRunner.step.postResults", "true");
+                System.setProperty("jiraTestRunner.step.generateDashboard", "true");
+                testCycleName = createNewCycle();
+                buildSuite(testCycleName);
+                runSuite();
+                postResults();
+                generateDashboard();
+            } else if(modeStaged){
                 System.out.println("=== exec.mode = staged");
                 testCycleName = createNewCycle();
                 buildSuite(testCycleName);
                 runSuite();
                 postResults();
                 generateDashboard();
-            }
-
-            if(modeRerun){
+            } else if(modeRerun){
                 testCycleName = (new String(Files.readAllBytes(Paths.get("target/testCycleName")))).trim();
                 System.setProperty("test.testCycleName", testCycleName);
                 Files.copy(Paths.get("target/test-report/testng-failed.xml"), Paths.get("target/failed.xml"), StandardCopyOption.REPLACE_EXISTING);
