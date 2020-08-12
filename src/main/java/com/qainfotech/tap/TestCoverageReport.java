@@ -31,7 +31,7 @@ public class TestCoverageReport {
        
         String projectId = ConfigReader.get("test.projectId");
         String versionId = ConfigReader.get("test.versionId");
-
+        String testCycleName = ConfigReader.get("test.testCycleName");
         String labels = "";
         String pass = "";
         String fail = "";
@@ -40,9 +40,9 @@ public class TestCoverageReport {
 
         TestCycle lastTestCycle = null;
         for(TestCycle testCycle:JiraAPI.getTestCycles(projectId, versionId)){
-            if(testCycle.name().startsWith("Jenkins_")){
+            if(testCycle.name().startsWith(testCycleName)){
                 lastTestCycle = testCycle;
-                labels += "\"" + testCycle.name().split("Jenkins_TestCycle_")[1] + "\",";
+                labels += "\"" + testCycle.name().split("_")[testCycle.name().split("_").length-1] + "\",";
                 pass += testCycle.executionSummary().get("PASS") + ",";
                 fail += testCycle.executionSummary().get("FAIL") + ",";
                 blocked += testCycle.executionSummary().get("BLOCKED") + ",";
@@ -68,7 +68,7 @@ public class TestCoverageReport {
                     report = testResult;
                 }
             }
-            testScripts.add(new TestScript(testExecution.issueKey(), report));
+            testScripts.add(new TestScript(testExecution, report));
         }
 
         // coverage summary
