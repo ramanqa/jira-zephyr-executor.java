@@ -41,8 +41,6 @@ public class JiraZephyrExecutor {
                 generateDashboard();
             } else if(modeRerun){
                 testCycleName = (new String(Files.readAllBytes(Paths.get("target/testCycleName")))).trim();
-                System.setProperty("test.testCycleName", testCycleName);
-                //Files.copy(Paths.get("target/test-report/testng-failed.xml"), Paths.get("target/failed.xml"), StandardCopyOption.REPLACE_EXISTING);
                 new File("target/failed.xml").delete();
                 System.setProperty("testng.suite","failed");
                 System.out.println("=== exec.mode = rerun");
