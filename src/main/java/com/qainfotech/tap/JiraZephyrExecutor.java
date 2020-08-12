@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.io.FileWriter;
+import java.io.File;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -31,7 +32,25 @@ public class JiraZephyrExecutor {
             String testCycleName = ConfigReader.get("test.testCycleName");
 
             System.out.println("== JiraTestRunner ==");
-            if(modeDefault){
+            if(modeStaged){
+                System.out.println("=== exec.mode = staged");
+                testCycleName = createNewCycle();
+                buildSuite(testCycleName);
+                runSuite();
+                postResults();
+                generateDashboard();
+            } else if(modeRerun){
+                testCycleName = (new String(Files.readAllBytes(Paths.get("target/testCycleName")))).trim();
+                System.setProperty("test.testCycleName", testCycleName);
+                //Files.copy(Paths.get("target/test-report/testng-failed.xml"), Paths.get("target/failed.xml"), StandardCopyOption.REPLACE_EXISTING);
+                new File("target/failed.xml").delete();
+                System.setProperty("testng.suite","failed");
+                System.out.println("=== exec.mode = rerun");
+                buildSuite(testCycleName);
+                runSuite();
+                postResults();
+                generateDashboard();
+            } else {
                 System.setProperty("jiraTestRunner.step.createNewCycle", "true");
                 System.setProperty("jiraTestRunner.step.buildSuite", "true");
                 System.setProperty("jiraTestRunner.step.runSuite", "true");
@@ -42,24 +61,7 @@ public class JiraZephyrExecutor {
                 runSuite();
                 postResults();
                 generateDashboard();
-            } else if(modeStaged){
-                System.out.println("=== exec.mode = staged");
-                testCycleName = createNewCycle();
-                buildSuite(testCycleName);
-                runSuite();
-                postResults();
-                generateDashboard();
-            } else if(modeRerun){
-                testCycleName = (new String(Files.readAllBytes(Paths.get("target/testCycleName")))).trim();
-                System.setProperty("test.testCycleName", testCycleName);
-                Files.copy(Paths.get("target/test-report/testng-failed.xml"), Paths.get("target/failed.xml"), StandardCopyOption.REPLACE_EXISTING);
-                System.setProperty("testng.suite","failed");
-                System.out.println("=== exec.mode = rerun");
-                runSuite();
-                postResults();
-                generateDashboard();
             }
-
             System.out.println("== Done. ==");
             Unirest.shutDown();
         }catch(Exception e){
@@ -120,8 +122,13 @@ public class JiraZephyrExecutor {
             List<TestExecution> testExecutions = JiraAPI.getTestExecutionsByTestCycleId(projectId, versionId, testCycle.id());
             System.out.println("==== Trying to add build local suite with " + testExecutions.size() + " tests");
             for(TestExecution testExecution:testExecutions){
-                System.out.println("==== Adding test to local test suite: " + testExecution.issueKey());
                 try{
+                    if(ConfigReader.isFlagSet("jiraTestRunner.mode.rerun")){
+                        if(testExecution.result().toLowerCase().equals("pass")){
+                            continue;
+                        }
+                    }
+                    System.out.println("==== Adding test to local test suite: " + testExecution.issueKey());
                     Issue testIssue = JiraAPI.getIssue(testExecution.issueKey());
                     if(testIssue.taid().get("testClass") != null){
                         String testName = testExecution.issueKey() + "__" + testExecution.cycleId() + "__" + testExecution.issueId() + "__" + testExecution.id();
